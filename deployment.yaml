@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-buildkit-example
+spec:
+  selector:
+    matchLabels:
+      app: hello-buildkit-example
+  template:
+    metadata:
+      labels:
+        app: hello-buildkit-example
+    spec:
+      containers:
+      - name: hello-buildkit-example
+        imagePullPolicy: IfNotPresent
+        image: 8gears.container-registry.com/examples/hello-world:myVersion
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-buildkit-example
+spec:
+  type: ClusterIP
+  selector:
+    app: hello-buildkit-example
+  ports:
+  - port: 80
+    targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-buildkit-example-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: hello-buildkit-example
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30080
